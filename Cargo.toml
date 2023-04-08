@@ -1,10 +1,10 @@
 [package]
-name = "swc-plugin-playground"
+name = "swc_plugin_playground"
 version = "0.1.0"
 edition = "2021"
 
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]
 
 [profile.release]
 lto = true
@@ -12,6 +12,10 @@ lto = true
 [dependencies]
 serde = "1"
 swc_core = { version = "0.74.*", features = ["ecma_plugin_transform"] }
+
+[dev-dependencies]
+swc_core = { version = "0.74.*", features = ["testing_transform", "ecma_parser"] }
+testing = "0.32.5"
 
 # .cargo/config defines few alias to build plugin.
 # cargo build-wasi generates wasm-wasi32 binary
