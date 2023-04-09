@@ -1,7 +1,7 @@
 {
   "name": "@cameronhunter/swc-plugin-prop-name-reverse",
   "version": "0.0.0",
-  "description": "An SWC plugin which reverses object property names",
+  "description": "A SWC plugin which reverses object property names",
   "author": "Cameron Hunter <hello@cameronhunter.co.uk>",
   "license": "MIT",
   "keywords": [
