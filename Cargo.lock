@@ -1297,6 +1297,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "swc-plugin-object-property-reverse"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "swc_core",
+ "testing",
+ "thiserror",
+]
+
+[[package]]
 name = "swc_atoms"
 version = "0.4.43"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1581,16 +1591,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 1.0.109",
-]
-
-[[package]]
-name = "swc_plugin_playground"
-version = "0.1.0"
-dependencies = [
- "serde",
- "swc_core",
- "testing",
- "thiserror",
 ]
 
 [[package]]
