@@ -6,6 +6,7 @@ edition = "2021"
 [lib]
 crate-type = ["cdylib", "rlib"]
 
+# See https://swc.rs/docs/plugin/publishing#adjusting-configuration-for-smaller-binary
 [profile.release]
 lto = true
 
