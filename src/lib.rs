@@ -5,6 +5,7 @@ use swc_core::ecma::{ast::KeyValueProp, visit::VisitMut};
 
 pub struct ObjectPropertyReverser;
 
+// See https://rustdoc.swc.rs/swc_ecma_visit/trait.VisitMut.html
 impl VisitMut for ObjectPropertyReverser {
     fn visit_mut_key_value_prop(&mut self, key_value_prop: &mut KeyValueProp) {
         match key_value_prop.key.try_reverse() {
