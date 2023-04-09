@@ -1,7 +1,19 @@
 mod reverse;
 
 use reverse::Reverse;
-use swc_core::ecma::{ast::KeyValueProp, visit::VisitMut};
+use swc_core::{
+    ecma::{
+        ast::{KeyValueProp, Program},
+        visit::{as_folder, FoldWith, VisitMut},
+    },
+    plugin::{plugin_transform, proxies::TransformPluginProgramMetadata},
+};
+
+#[plugin_transform]
+pub fn process_transform(program: Program, metadata: TransformPluginProgramMetadata) -> Program {
+    let _config = metadata.get_transform_plugin_config();
+    program.fold_with(&mut as_folder(ObjectPropertyReverser))
+}
 
 pub struct ObjectPropertyReverser;
 
