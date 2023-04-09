@@ -1,4 +1,4 @@
-# swc-plugin-object-property-reverse
+# swc-plugin-prop-name-reverse
 
 [![Rust](https://github.com/cameronhunter/swc-plugin-prop-name-reverse/actions/workflows/rust.yml/badge.svg)](https://github.com/cameronhunter/swc-plugin-prop-name-reverse/actions/workflows/rust.yml)
 
