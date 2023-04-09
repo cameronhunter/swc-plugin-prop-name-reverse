@@ -1,60 +1,96 @@
+use std::{convert::Infallible, num::ParseFloatError};
 use swc_core::ecma::{
     ast::{Ident, KeyValueProp, PropName},
     atoms::JsWord,
     visit::VisitMut,
 };
+use thiserror::Error;
 
 pub struct ObjectPropertyReverser;
 
 impl VisitMut for ObjectPropertyReverser {
     fn visit_mut_key_value_prop(&mut self, key_value_prop: &mut KeyValueProp) {
-        if let Some(prop_name) = key_value_prop.key.reverse() {
-            key_value_prop.key = prop_name;
+        match key_value_prop.key.reverse() {
+            Ok(prop_name) => {
+                key_value_prop.key = prop_name;
+            }
+            Err(_) => {
+                // Log error?
+            }
         }
     }
 }
 
 trait Reverse {
+    type Error;
+
     /// Reverse the value
-    fn reverse(&self) -> Option<Self>
+    fn reverse(&self) -> Result<Self, Self::Error>
     where
         Self: Sized;
 }
 
+#[derive(PartialEq, Debug, Error)]
+enum PropNameReverseError {
+    #[error("This should never have happened!")]
+    Infallible {
+        #[from]
+        cause: Infallible,
+    },
+
+    #[error("Failed to reverse numeric property name")]
+    NumberReverseError {
+        #[from]
+        cause: ParseFloatError,
+    },
+
+    #[error("Cannot reverse property type: %s")]
+    Unsupported(&'static str),
+}
+
 impl Reverse for PropName {
-    fn reverse(&self) -> Option<Self> {
+    type Error = PropNameReverseError;
+
+    fn reverse(&self) -> Result<Self, Self::Error> {
         match self {
-            PropName::Ident(ident) => ident
-                .sym
-                .reverse()
-                .map(|reversed| PropName::Ident(Ident::new(reversed.into(), ident.span))),
+            PropName::Ident(ident) => {
+                let reversed = ident.sym.reverse()?;
+                Ok(PropName::Ident(Ident::new(reversed.into(), ident.span)))
+            }
 
-            PropName::Num(number) => number.value.reverse().map(|num| PropName::Num(num.into())),
+            PropName::Num(number) => {
+                let reversed = number.value.reverse()?;
+                Ok(PropName::Num(reversed.into()))
+            }
 
-            PropName::Str(name) => name
-                .value
-                .reverse()
-                .map(|reversed| PropName::Str(reversed.into())),
+            PropName::Str(name) => {
+                let reversed = name.value.reverse()?;
+                Ok(PropName::Str(reversed.into()))
+            }
 
-            _ => None,
+            PropName::BigInt(_) => Err(Self::Error::Unsupported("BigInt")),
+            PropName::Computed(_) => Err(Self::Error::Unsupported("Computed")),
         }
     }
 }
 
 impl Reverse for JsWord {
-    fn reverse(&self) -> Option<Self> {
-        Some(self.chars().rev().collect::<String>().into())
+    type Error = Infallible;
+
+    fn reverse(&self) -> Result<Self, Self::Error> {
+        self.chars().rev().collect::<String>().try_into()
     }
 }
 
 impl Reverse for f64 {
-    fn reverse(&self) -> Option<Self> {
+    type Error = ParseFloatError;
+
+    fn reverse(&self) -> Result<Self, Self::Error> {
         self.to_string()
             .chars()
             .rev()
             .collect::<String>()
             .parse::<f64>()
-            .ok()
     }
 }
 
@@ -68,7 +104,7 @@ mod tests {
         let input = PropName::Ident(Ident::new(JsWord::from("hello").into(), DUMMY_SP));
         let expected = PropName::Ident(Ident::new(JsWord::from("olleh").into(), DUMMY_SP));
 
-        assert_eq!(input.reverse(), Some(expected));
+        assert_eq!(input.reverse(), Ok(expected));
     }
 
     #[test]
@@ -76,7 +112,7 @@ mod tests {
         let input = PropName::Num(123456789.into());
         let expected = PropName::Num(987654321.into());
 
-        assert_eq!(input.reverse(), Some(expected));
+        assert_eq!(input.reverse(), Ok(expected));
     }
 
     #[test]
@@ -84,12 +120,12 @@ mod tests {
         let input = PropName::Str("hello".into());
         let expected = PropName::Str("olleh".into());
 
-        assert_eq!(input.reverse(), Some(expected));
+        assert_eq!(input.reverse(), Ok(expected));
     }
 
     #[test]
     fn test_reverse_f64() {
-        assert_eq!(123456789f64.reverse(), Some(987654321f64));
+        assert_eq!(123456789f64.reverse(), Ok(987654321f64));
     }
 
     #[test]
@@ -97,6 +133,6 @@ mod tests {
         let input: JsWord = "hello".into();
         let expected: JsWord = "olleh".into();
 
-        assert_eq!(input.reverse(), Some(expected));
+        assert_eq!(input.reverse(), Ok(expected));
     }
 }
