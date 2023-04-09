@@ -1,5 +1,5 @@
 {
-  "name": "@cameronhunter/swc-plugin-object-property-reverse",
+  "name": "@cameronhunter/swc-plugin-prop-name-reverse",
   "version": "0.0.0",
   "description": "An SWC plugin which reverses object property names",
   "author": "Cameron Hunter <hello@cameronhunter.co.uk>",
@@ -7,7 +7,7 @@
   "keywords": [
     "swc-plugin"
   ],
-  "main": "target/wasm32-wasi/release/swc_plugin_object_property_reverse.wasm",
+  "main": "target/wasm32-wasi/release/swc_plugin_prop_name_reverse.wasm",
   "scripts": {
     "clean": "cargo clean",
     "build": "cargo build --target wasm32-wasi --release",
@@ -16,7 +16,7 @@
     "prepublishOnly": "pnpm build"
   },
   "files": [
-    "target/wasm32-wasi/release/swc_plugin_object_property_reverse.wasm"
+    "target/wasm32-wasi/release/swc_plugin_prop_name_reverse.wasm"
   ],
   "preferUnplugged": true,
   "devDependencies": {

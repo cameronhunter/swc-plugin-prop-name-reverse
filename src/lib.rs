@@ -12,13 +12,13 @@ use swc_core::{
 #[plugin_transform]
 pub fn process_transform(program: Program, metadata: TransformPluginProgramMetadata) -> Program {
     let _config = metadata.get_transform_plugin_config();
-    program.fold_with(&mut as_folder(PropNameReverser))
+    program.fold_with(&mut as_folder(PropNameReverse))
 }
 
-pub struct PropNameReverser;
+pub struct PropNameReverse;
 
 // See https://rustdoc.swc.rs/swc_ecma_visit/trait.VisitMut.html
-impl VisitMut for PropNameReverser {
+impl VisitMut for PropNameReverse {
     fn visit_mut_key_value_prop(&mut self, key_value_prop: &mut KeyValueProp) {
         match key_value_prop.key.try_reverse() {
             Ok(prop_name) => {
@@ -35,7 +35,7 @@ impl VisitMut for PropNameReverser {
 mod tests {
     use std::path::PathBuf;
 
-    use super::PropNameReverser;
+    use super::PropNameReverse;
     use swc_core::{
         common::{chain, Mark},
         ecma::{
@@ -62,7 +62,7 @@ mod tests {
                 chain!(
                     // See https://swc.rs/docs/plugin/ecmascript/cheatsheet#apply-resolver-while-testing
                     resolver(Mark::new(), Mark::new(), false),
-                    as_folder(PropNameReverser)
+                    as_folder(PropNameReverse)
                 )
             },
             &input,

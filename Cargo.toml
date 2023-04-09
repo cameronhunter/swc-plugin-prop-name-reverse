@@ -1,17 +1,16 @@
 [package]
-name = "swc-plugin-object-property-reverse"
+name = "swc-plugin-prop-name-reverse"
 version = "0.1.0"
 edition = "2021"
 
 [lib]
-crate-type = ["cdylib", "rlib"]
+crate-type = ["cdylib"]
 
 # See https://swc.rs/docs/plugin/publishing#adjusting-configuration-for-smaller-binary
 [profile.release]
 lto = true
 
 [dependencies]
-serde = "1"
 swc_core = { version = "0.74.*", features = ["ecma_plugin_transform"] }
 thiserror = "1.0.40"
 

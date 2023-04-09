@@ -1297,10 +1297,9 @@ dependencies = [
 ]
 
 [[package]]
-name = "swc-plugin-object-property-reverse"
+name = "swc-plugin-prop-name-reverse"
 version = "0.1.0"
 dependencies = [
- "serde",
  "swc_core",
  "testing",
  "thiserror",
