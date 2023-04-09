@@ -10,7 +10,7 @@
   "main": "target/wasm32-wasi/release/swc_plugin_object_property_reverse.wasm",
   "scripts": {
     "clean": "cargo clean",
-    "build": "cargo build-wasi --release",
+    "build": "cargo build --target wasm32-wasi --release",
     "test": "cargo test",
     "test:int": "pnpm build && vitest run",
     "prepublishOnly": "pnpm build"
